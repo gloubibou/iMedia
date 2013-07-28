@@ -119,7 +119,14 @@
 		
 		if (source)
 		{
-			CGImageSourceStatus status = CGImageSourceGetStatus(source);
+			CGImageSourceStatus status = kCGImageStatusUnknownType;
+
+			@try {
+				status = CGImageSourceGetStatus(source);
+			}
+			@catch (NSException *exception) {
+				NSLog(@"Failed to get status of : %@ (%@)", aPath, exception);
+			}
 
 			if (status == kCGImageStatusComplete) {
 				CFDictionaryRef propsCF = CGImageSourceCopyPropertiesAtIndex(source,  0,  NULL );
