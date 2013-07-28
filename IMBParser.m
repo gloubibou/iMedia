@@ -170,6 +170,9 @@
 	return YES;
 }
 
+#if !IMB_COMPILING_WITH_LION_OR_NEWER_SDK
+#define NSURLBookmarkResolutionWithSecurityScope 0
+#endif
 
 - (void) willUseParser
 {
