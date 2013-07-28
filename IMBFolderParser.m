@@ -190,14 +190,22 @@
 - (BOOL) populateNode:(IMBNode*)inNode options:(IMBOptions)inOptions error:(NSError**)outError
 {
 	NSString* folder = inNode.mediaSource;
+
+	if (!folder) return NO;
+
+	NSFileManager* fm = [NSFileManager imb_threadSafeManager];
+	BOOL isDirectory = NO;
+
+	if (![fm fileExistsAtPath:folder isDirectory:&isDirectory]) return NO;
+	if (!isDirectory) return NO;
+
     NSURL* folderURL = [NSURL fileURLWithPath:folder isDirectory:YES];
     
     // Handle the folder being a symlink; becomes more likely when sandboxed
     folderURL = [folderURL URLByResolvingSymlinksInPath];
     if (!folderURL) folderURL = [NSURL fileURLWithPath:folder]; // fallback
     
-    NSFileManager* fm = [NSFileManager imb_threadSafeManager];
-    
+
     NSArray* files = [fm contentsOfDirectoryAtURL:folderURL
                        includingPropertiesForKeys:nil
                                           options:NSDirectoryEnumerationSkipsHiddenFiles
